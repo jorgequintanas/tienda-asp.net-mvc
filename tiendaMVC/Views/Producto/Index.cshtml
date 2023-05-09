@@ -1,0 +1,527 @@
+﻿@model tiendaMVC.Models.Producto
+
+@{
+    ViewBag.Title = "Productos";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Producto</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Sku, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextArea("Sku", new { maxlength = 6, rows = 1, @class = "soloNumero", style = "width: 283px; height: 30px;" })
+
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Articulo, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextArea("Articulo", new { maxlength = 15, rows = 1, style = "width: 283px; height: 30px;" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Marca, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextArea("Marca", new { maxlength = 15, rows = 1, style = "width: 283px; height: 30px;" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Modelo, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextArea("Modelo", new { maxlength = 20, rows = 1, style = "width: 283px; height: 30px;" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Departamento, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <select id="ddlDepartamentos">
+                <option value="-1">Seleccione Departamento</option>
+                @foreach (var depto in Model.listaDepartamentos)
+                {
+                <option value="@depto.id">@(depto.numero_departamento.ToString() + " - " + depto.nombre)</option>
+                }
+            </select>
+            @Html.HiddenFor(m => Model.Departamento, new { id = "hfDepartamento", Value = @Model.Departamento })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Clase, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <select id="ddlClases"></select>
+            @Html.HiddenFor(m => Model.Clase, new { id = "hfClase", Value = @Model.Clase })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Familia, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <select id="ddlFamilias"></select>
+            @Html.HiddenFor(m => Model.Familia, new { id = "hfFamilia", Value = @Model.Familia })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Stock, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextArea("Stock", new { maxlength = 9, rows = 1, @class = "soloNumero", style = "width: 283px; height: 30px;" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextArea("Cantidad", new { maxlength = 9, rows = 1, @class = "soloNumero", style = "width: 283px; height: 30px;" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Fecha_Alta, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" id="Fecha_Alta">
+            @Html.DisplayFor(model => model.Fecha_Alta, "{0:dd/MM/yyyy}")
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Descontinuado, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                @Html.EditorFor(model => model.Descontinuado)
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Fecha_Baja, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" id="Fecha_Baja">
+            @Html.DisplayFor(model => model.Fecha_Baja, "{0:dd/MM/yyyy}")
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input id="btnGuardar" type="submit" value="Guardar" class="btn btn-default" />
+            <input id="btnEliminar" type="submit" value="Eliminar" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        limpiarControles();
+        controles("Inicio");
+
+        function limpiarControles() {
+            $("#Articulo").val("");
+            $("#Articulo").prop("disabled", true);
+            $("#Marca").val("");
+            $("#Marca").prop("disabled", true);
+            $("#Modelo").val("");
+            $("#Modelo").prop("disabled", true);
+            $("#Fecha_Alta").text("");
+            $("#ddlDepartamentos").prop("disabled", true);
+            $("#ddlClases").prop("disabled", true);
+            $("#ddlFamilias").prop("disabled", true);
+            $("#Stock").val("");
+            $("#Stock").prop("disabled", true);
+            $("#Cantidad").val("");
+            $("#Cantidad").prop("disabled", true);
+            $("#Descontinuado").prop("disabled", true);
+            $("#Descontinuado").val(false);
+            $("#Fecha_Baja").text("");
+            $("#btnGuardar").prop("disabled", true);
+            $("#btnEliminar").prop("disabled", true);
+            limpiarCombos();
+        };
+
+        function limpiarCombos() {
+            $("#ddlDepartamentos").val("-1");
+            $("#hfDepartamento").val("-1");
+            $("#ddlClases").empty();
+            $("#ddlClases").append("<option value = '-1'>Seleccione Clase</option>");
+            $("#hfClase").val("-1");
+            $("#ddlClases").val("-1");
+            $("#ddlFamilias").empty();
+            $("#ddlFamilias").append("<option value = '-1'>Seleccione Familia</option>");
+            $("#hfFamilia").val("-1");
+            $("#ddlFamilias").val("-1");
+        };
+
+        function controles($metodo) {
+            switch ($metodo) {
+                case "Inicio":
+                    $("#ddlDepartamentos").prop("disabled", true);
+                    $("#hfDepartamento").val("-1");
+                    $("#ddlClases").prop("disabled", true);
+                    $("#hfClase").val("-1");
+                    $("#ddlClases").append("<option value = '-1'>Seleccione Clase</option>");
+                    $("#ddlFamilias").prop("disabled", true);
+                    $("#hfFamilia").val("-1");
+                    $("#ddlFamilias").append("<option value = '-1'>Seleccione Familia</option>");
+                    $("#Descontinuado").prop("disabled", true);
+                    $("#btnGuardar").prop("disabled", true);
+                    $("#btnEliminar").prop("disabled", true);
+                    $("#Sku").val("");
+                    $("#Sku").focus();
+                    break;
+
+                case "Insertar":
+                    $("#Articulo").val("");
+                    $("#Articulo").prop("disabled", false);
+                    $("#Marca").val("");
+                    $("#Marca").prop("disabled", false);
+                    $("#Modelo").val("");
+                    $("#Modelo").prop("disabled", false);
+                    $("#ddlDepartamentos").prop("disabled", false);
+                    $("#hfDepartamento").val("-1");
+                    $("#ddlClases").prop("disabled", false);
+                    $("#hfClase").val("-1");
+                    $("#ddlFamilias").prop("disabled", false);
+                    $("#hfFamilia").val("-1");
+                    $("#Fecha_Alta").text("");
+                    $("#Stock").val("");
+                    $("#Stock").prop("disabled", false);
+                    $("#Cantidad").val("");
+                    $("#Cantidad").prop("disabled", false);
+                    $("#Descontinuado").val(false);
+                    $("#Descontinuado").prop("disabled", true);
+                    $("#Fecha_Baja").text("");
+                    $("#btnGuardar").val("Guardar");
+                    $("#btnGuardar").prop("disabled", true);
+                    $("#btnEliminar").prop("disabled", true);
+                    limpiarCombos();
+                    $("#Articulo").focus();
+                    break;
+
+                case "Actualizar":
+                    $("#Articulo").prop("disabled", false);
+                    $("#Marca").prop("disabled", false);
+                    $("#Modelo").prop("disabled", false);
+                    $("#ddlDepartamentos").prop("disabled", false);
+                    $("#ddlClases").prop("disabled", false);
+                    $("#ddlFamilias").prop("disabled", false);
+                    $("#Stock").prop("disabled", false);
+                    $("#Cantidad").prop("disabled", false);
+                    $("#Descontinuado").prop("disabled", false);
+                    $("#btnGuardar").val("Actualizar");
+                    $("#btnGuardar").prop("disabled", true);
+                    $("#btnEliminar").prop("disabled", false);
+                    $("#Articulo").focus();
+                    break;
+            }
+        };
+
+        function obtenerProducto() {
+            $.ajax({
+                    url: '@Url.Action("ObtenerProducto", "Producto")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: { sku: $("#Sku").val() },
+                    success: function (producto) {
+                        if (producto.sku != "0" && producto.sku != "") {
+
+                            $("#Articulo").val(producto.Articulo);
+                            $("#Marca").val(producto.Marca);
+                            $("#Modelo").val(producto.Modelo);
+
+                            $("#hfDepartamento").val(producto.Departamento);
+                            $("#ddlDepartamentos").val(producto.Departamento);
+
+                            $("#hfClase").val(producto.Clase);
+                            obtenerClasesPorIdDepartamento();
+
+                            $("#hfFamilia").val(producto.Familia);
+                            obtenerFamiliasPorIdClase();
+
+                            $("#Fecha_Alta").text(dateFormat(new Date(parseInt((producto.Fecha_Alta).match(/\d+/)[0]))));
+                            $("#Stock").val(producto.Stock);
+                            $("#Cantidad").val(producto.Cantidad);
+                            $("#Descontinuado").prop("checked", producto.Descontinuado);
+                            $("#Fecha_Baja").text((producto.Fecha_Baja == "/Date(-2208963600000)/") ? "01/01/1900" : dateFormat(new Date(parseInt((producto.Fecha_Baja).match(/\d+/)[0]))));
+
+                            controles("Actualizar");
+                            validarCampos();
+                        }
+                        else {
+                            limpiarControles();
+                            controles("Insertar");
+                        }
+                    },
+                error: function (error) {
+                    limpiarControles();
+                    controles("Insertar");
+                }
+                });
+        }
+
+        function obtenerClasesPorIdDepartamento() {
+            $.ajax({
+                url: '@Url.Action("ObtenerClasesPorIdDepartamento", "Clase")',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: { idDepartamento: $("#hfDepartamento").val() },
+                success: function (clases) {
+
+                    $("#ddlClases").empty();
+                    $("#ddlClases").append("<option value = '-1'>Seleccione Clase</option>");
+
+                    $.each(clases, function (index, value) {
+                        $("#ddlClases").append("<option value = " + value.id + ">" + value.numero_clase + " - " + value.nombre + "</option>");
+                    });
+
+                    $("#ddlClases").val($("#hfClase").val());
+
+                    $("#ddlFamilias").append("<option value = '-1'>Seleccione Familia</option>");
+
+                    },
+                error: function (error) { console.log(error); }
+            });
+        };
+
+        function obtenerFamiliasPorIdClase() {
+            $.ajax({
+                url: '@Url.Action("ObtenerFamiliasPorIdClase", "Familia")',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: { idClase: $("#hfClase").val() },
+                success: function (familias) {
+
+                    $("#ddlFamilias").empty();
+                    $("#ddlFamilias").append("<option value = '-1'>Seleccione Familia</option>");
+
+                    $.each(familias, function (index, value) {
+                        $("#ddlFamilias").append("<option value = " + value.id + ">" + value.numero_familia + " - " + value.nombre + "</option>");
+                    });
+
+                    $("#ddlFamilias").val($("#hfFamilia").val());
+                },
+                error: function (error) { console.log(error); }
+            });
+        };
+
+        function guardarProducto() {
+            console.log("Guardar");
+            var producto = {
+                sku: parseInt($("#Sku").val()),
+                articulo: $("#Articulo").val(),
+                marca: $("#Marca").val(),
+                modelo: $("#Modelo").val(),
+                departamento: parseInt($("#hfDepartamento").val()),
+                clase: parseInt($("#hfClase").val()),
+                familia: parseInt($("#hfFamilia").val()),
+                stock: parseInt($("#Stock").val()),
+                cantidad: parseInt($("#Cantidad").val()),
+                descontinuado: false
+            }
+
+            $.ajax({
+                url: '/Producto/InsertarProducto',
+                type: 'post',
+                dataType: 'json',
+                data: JSON.stringify(producto),
+                contentType: 'application/json',
+                success: function (data) {
+                    alert("Se ha guardado correctamente el producto");
+                    $("#Sku").val("");
+                },
+                error: function () {
+                    alert("Error al guardar el producto");
+                }
+            });
+        };
+
+        function actualizarProducto() {
+
+            var fechaAlta = $("#Fecha_Alta").text();
+            fechaAlta = fechaAlta.substr(6, 4) + "-" + fechaAlta.substr(3, 2) + "-" + fechaAlta.substr(0, 2);
+            console.log(fechaAlta);
+
+            var fechaBaja = $("#Fecha_Baja").text();
+            console.log("X" + fechaBaja);
+            fechaBaja = fechaBaja.substr(6, 4) + "-" + fechaBaja.substr(3, 2) + "-" + fechaBaja.substr(0, 2);
+            console.log(fechaBaja);
+
+            var bolDescontinuado = $('#Descontinuado').is(":checked") ? true : false;
+
+            if ($('#Descontinuado').is(":checked")) {
+                bolDescontinuado = true;
+            }
+            else {
+                bolDescontinuado = false;
+                fechaBaja = "1900-01-01";
+            }
+
+            if (fechaBaja == "1900-01-01" && bolDescontinuado)
+                fechaBaja = fechaActual();
+
+            var producto = {
+                sku: parseInt($("#Sku").val()),
+                articulo: $("#Articulo").val(),
+                marca: $("#Marca").val(),
+                modelo: $("#Modelo").val(),
+                departamento: parseInt($("#hfDepartamento").val()),
+                clase: parseInt($("#hfClase").val()),
+                familia: parseInt($("#hfFamilia").val()),
+                fecha_alta: fechaAlta,
+                stock: parseInt($("#Stock").val()),
+                cantidad: parseInt($("#Cantidad").val()),
+                descontinuado: bolDescontinuado,
+                fecha_baja: fechaBaja
+            }
+
+            $.ajax({
+                url: '/Producto/ActualizarProducto',
+                type: 'post',
+                dataType: 'json',
+                data: JSON.stringify(producto),
+                contentType: 'application/json',
+                success: function (data) {
+                    alert("Se ha actualizado correctamente el producto");
+                },
+                error: function () {
+                    alert("Error al actualizar el producto");
+                }
+            });
+        };
+
+        function eliminarProducto() {
+            $.ajax({
+                url: '@Url.Action("EliminarProducto", "Producto")',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: { sku: $("#Sku").val() },
+                success: function () {
+                    alert("Se ha eliminado correctamente el producto");
+                    limpiarControles();
+                    $("#Sku").val("");
+
+                },
+                error: function () {
+                    alert("Error al eliminar el producto");
+                }
+            });
+        };
+
+        function dateFormat(d) {
+            return (d.getDate() + "").padStart(2, "0")
+                + "/" + ((d.getMonth() + 1) + "").padStart(2, "0")
+                + "/" + d.getFullYear();
+        };
+
+        function fechaActual() {
+            const tiempoTranscurrido = Date.now();
+            const hoy = new Date(tiempoTranscurrido);
+
+            return hoy.toISOString().substr(0, 10);
+        };
+
+        function validarCampos() {
+            if ($("#Sku").val() != "" && $("#Sku").val() != "" && $("#Articulo").val() != "" && $("#Marca").val() != "" && $("#Modelo").val() != "" && $("#hfDepartamento").val() != "-1"
+                && $("#hfDepartamento").val() != "" && $("#hfClase").val() != "-1" && $("#hfClase").val() != "" && $("#hfFamilia").val() != "-1" && $("#hfFamilia").val() != ""
+                && $("#Stock").val() != "" && $("#Cantidad").val() != "" && !validarCantidadMayorStock()) {
+                console.log($("#hfFamilia").val());
+                $("#btnGuardar").prop("disabled", false);
+            }
+            else {
+                $("#btnGuardar").prop("disabled", true);
+            }
+        };
+
+        function validarCantidadMayorStock() {
+            if ($("#Cantidad").val() != "" && $("#Stock").val() != "")
+                return (parseInt($("#Cantidad").val()) > parseInt($("#Stock").val())) ? true : false;
+        };
+
+        $("#Sku").blur(function () {
+            if ($("#Sku").val() != "0" && $("#Sku").val() != "") {
+                limpiarControles();
+                obtenerProducto();
+            }
+            else {
+                alert("Debe capturar un sku válido");
+            }
+        });
+
+        $("#Articulo").blur(function () {
+            validarCampos();
+        });
+
+        $("#Marca").blur(function () {
+            validarCampos();
+        });
+
+        $("#Modelo").blur(function () {
+            validarCampos();
+        });
+
+        $("#Stock").blur(function () {
+            if (validarCantidadMayorStock()) {
+                alert("La cantidad no debe ser mayor que el stock");
+                $("#Stock").val("");
+            }
+            validarCampos();
+        });
+
+        $("#Cantidad").blur(function () {
+            if (validarCantidadMayorStock()) {
+                alert("La cantidad no debe ser mayor que el stock");
+                $("#Cantidad").val("");
+            }
+            validarCampos();
+        });
+
+        $("#ddlDepartamentos").on('change', function () {
+            $("#hfDepartamento").val($("#ddlDepartamentos").val());
+
+            if ($("#ddlDepartamentos").val() != null && $("#ddlDepartamentos").val() != "-1") {
+                obtenerClasesPorIdDepartamento();
+            }
+            validarCampos();
+        });
+
+        $("#ddlClases").on('change', function () {
+            $("#hfClase").val($("#ddlClases").val());
+
+            if ($("#ddlClases").val() != null && $("#ddlClases").val() != "-1") {
+                obtenerFamiliasPorIdClase();
+            }
+            validarCampos();
+        });
+
+        $("#ddlFamilias").on('change', function () {
+            $("#hfFamilia").val($("#ddlFamilias").val());
+            validarCampos();
+        });
+
+        $('.soloNumero').keyup(function () {
+            this.value = (this.value + '').replace(/[^0-9]/g, '');
+        });
+
+        $("#btnGuardar").on('click', function () {
+            if ($("#btnGuardar").val() == "Guardar")
+                guardarProducto();
+            else
+                actualizarProducto();
+        });
+
+        $(document).on("click", "#btnEliminar", function (e) {
+            e.preventDefault();
+            url = $(this).attr("href");
+            if (confirm("Está seguro de eliminar?")) {
+                eliminarProducto();
+            }
+            return false;
+        });
+    });
+</script>
