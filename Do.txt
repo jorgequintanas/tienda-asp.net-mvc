@@ -1,2 +1,2 @@
-1. Proyecto ligado a la API del repositorio https://github.com/jorgequintanas/tienda-asp.net-mvc.git
+1. Proyecto ligado a la API del repositorio https://github.com/jorgequintanas/tienda-rest-api-csharp-asp.net-entity-framework
 1. De ser necesario, modificar el puerto de la API en las connectionStrings del archivo Web.config

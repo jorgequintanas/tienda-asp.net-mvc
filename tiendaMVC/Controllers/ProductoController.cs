@@ -106,6 +106,7 @@ namespace AplicacionWebEscolar.Controllers
                 return Json(response.IsSuccessStatusCode, JsonRequestBehavior.AllowGet);
             }
         }
+
         public ActionResult EliminarProducto(int sku)
         {
             using (var client = new HttpClient())

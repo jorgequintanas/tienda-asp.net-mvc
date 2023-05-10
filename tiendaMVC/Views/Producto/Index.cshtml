@@ -121,6 +121,9 @@
 
         limpiarControles();
         controles("Inicio");
+        var departamento = "0";
+        var clase = "0";
+        var familia = "0";
 
         function limpiarControles() {
             $("#Articulo").val("");
@@ -237,11 +240,14 @@
 
                             $("#hfDepartamento").val(producto.Departamento);
                             $("#ddlDepartamentos").val(producto.Departamento);
+                            departamento = producto.Departamento;
 
                             $("#hfClase").val(producto.Clase);
+                            clase = producto.Clase;
                             obtenerClasesPorIdDepartamento();
 
                             $("#hfFamilia").val(producto.Familia);
+                            familia = producto.Familia;
                             obtenerFamiliasPorIdClase();
 
                             $("#Fecha_Alta").text(dateFormat(new Date(parseInt((producto.Fecha_Alta).match(/\d+/)[0]))));
@@ -272,7 +278,7 @@
                 dataType: "json",
                 data: { idDepartamento: $("#hfDepartamento").val() },
                 success: function (clases) {
-
+                    
                     $("#ddlClases").empty();
                     $("#ddlClases").append("<option value = '-1'>Seleccione Clase</option>");
 
@@ -280,7 +286,19 @@
                         $("#ddlClases").append("<option value = " + value.id + ">" + value.numero_clase + " - " + value.nombre + "</option>");
                     });
 
-                    $("#ddlClases").val($("#hfClase").val());
+                    if (departamento != $("#hfDepartamento").val()) {
+                        $("#hfClase").val("-1");
+                        $("#ddlClases").val($("#hfClase").val());
+                    }
+                    else {
+                        if (clase != $("#hfClase").val())
+                            $("#ddlClases").val("-1");
+                        else
+                            $("#ddlClases").val($("#hfClase").val());
+                    }
+
+                    if ($("#ddlClases").val() == "-1")
+                        $("#ddlFamilias").empty();
 
                     $("#ddlFamilias").append("<option value = '-1'>Seleccione Familia</option>");
 
@@ -304,6 +322,17 @@
                         $("#ddlFamilias").append("<option value = " + value.id + ">" + value.numero_familia + " - " + value.nombre + "</option>");
                     });
 
+                    if (clase != $("#hfClase").val()) {
+                        $("#hfFamilia").val("-1");
+                        $("#ddlFamilias").val($("#hfFamilia").val());
+                    }
+                    else {
+                        if (clase != $("#hfFamilia").val())
+                            $("#ddlFamilias").val("-1");
+                        else
+                            $("#ddlFamilias").val($("#hfFamilia").val());
+                    }
+
                     $("#ddlFamilias").val($("#hfFamilia").val());
                 },
                 error: function (error) { console.log(error); }
@@ -311,7 +340,6 @@
         };
 
         function guardarProducto() {
-            console.log("Guardar");
             var producto = {
                 sku: parseInt($("#Sku").val()),
                 articulo: $("#Articulo").val(),
@@ -345,13 +373,10 @@
 
             var fechaAlta = $("#Fecha_Alta").text();
             fechaAlta = fechaAlta.substr(6, 4) + "-" + fechaAlta.substr(3, 2) + "-" + fechaAlta.substr(0, 2);
-            console.log(fechaAlta);
-
+            
             var fechaBaja = $("#Fecha_Baja").text();
-            console.log("X" + fechaBaja);
             fechaBaja = fechaBaja.substr(6, 4) + "-" + fechaBaja.substr(3, 2) + "-" + fechaBaja.substr(0, 2);
-            console.log(fechaBaja);
-
+            
             var bolDescontinuado = $('#Descontinuado').is(":checked") ? true : false;
 
             if ($('#Descontinuado').is(":checked")) {
@@ -430,7 +455,6 @@
             if ($("#Sku").val() != "" && $("#Sku").val() != "" && $("#Articulo").val() != "" && $("#Marca").val() != "" && $("#Modelo").val() != "" && $("#hfDepartamento").val() != "-1"
                 && $("#hfDepartamento").val() != "" && $("#hfClase").val() != "-1" && $("#hfClase").val() != "" && $("#hfFamilia").val() != "-1" && $("#hfFamilia").val() != ""
                 && $("#Stock").val() != "" && $("#Cantidad").val() != "" && !validarCantidadMayorStock()) {
-                console.log($("#hfFamilia").val());
                 $("#btnGuardar").prop("disabled", false);
             }
             else {
